@@ -173,7 +173,7 @@ def listen_ssh_commands(chat_id, client):
         try:
             stdin, stdout, stderr = client.exec_command(full_command)
             output = stdout.read().decode().strip()
-            errors = stderr.read().decode().strip()
+            errors: object = stderr.read().decode().strip()
 
             if '__WORKING_DIR__' in output:
                 output, new_cwd = output.split('__WORKING_DIR__')
@@ -192,9 +192,9 @@ def listen_ssh_commands(chat_id, client):
                         marked_entries.append(f'[Файл] {entry[:-4]}')
                     else:
                         marked_entries.append(entry)
-                response += f"Результат выполнения команды:\n {''.join(marked_entries)}"
+                response += "Результат выполнения команды: \n" + '\n'.join(marked_entries)
             elif errors:
-                response += f"Ошибка выполнения команды:\n{errors}"
+                response += "Ошибка выполнения команды: \n" + errors
             else:
                 response += "Ожидание команды..."
 
