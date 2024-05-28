@@ -26,16 +26,14 @@ sudo systemctl daemon-reload
 echo "Removing the main script..."
 sudo rm ${TARGET_PATH}/${MAIN_SCRIPT}
 
-# Очистка переменных окружения
-unset token_tg
-unset token_ow
-unset token_wa
-unset token_accu
+# Удаление переменных окружения из /etc/environment
+echo "Removing environment variables..."
+sudo sed -i '/token_tg/d' /etc/environment
+sudo sed -i '/token_ow/d' /etc/environment
+sudo sed -i '/token_wa/d' /etc/environment
+sudo sed -i '/token_accu/d' /etc/environment
 
-# Удаление токенов из текущей сессии
-sed -i '/token_tg/d' ~/.bashrc
-sed -i '/token_ow/d' ~/.bashrc
-sed -i '/token_wa/d' ~/.bashrc
-sed -i '/token_accu/d' ~/.bashrc
+# Перезагрузка переменных окружения
+source /etc/environment
 
 echo "Uninstallation completed successfully!"

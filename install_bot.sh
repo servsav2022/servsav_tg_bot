@@ -6,7 +6,6 @@ SERVICE_FILE=/etc/systemd/system/${SERVICE_NAME}.service
 SCRIPT_PATH=$(pwd)
 TARGET_PATH=/usr/local/bin
 TOKENS_FILE=tokens.txt
-MAIN_SCRIPT=main.py
 
 # Установка зависимостей
 echo "Installing required packages..."
@@ -23,23 +22,21 @@ if [ ! -f "${SCRIPT_PATH}/${TOKENS_FILE}" ]; then
     exit 1
 fi
 
-# Проверка наличия основного скрипта
-if [ ! -f "${SCRIPT_PATH}/${MAIN_SCRIPT}" ]; then
-    echo "Error: File ${MAIN_SCRIPT} not found!"
-    exit 1
-fi
-
 # Считывание токенов из файла и экспорт в переменные окружения
 echo "Setting up environment variables..."
 while IFS='=' read -r key value; do
     if [[ $key == "token_tg" || $key == "token_ow" || $key == "token_wa" || $key == "token_accu" ]]; then
-        export "$key"="$value"
+        sudo sed -i "/${key}/d" /etc/environment
+        echo "${key}=${value}" | sudo tee -a /etc/environment
     fi
 done < "${SCRIPT_PATH}/${TOKENS_FILE}"
 
+# Перезагрузка переменных окружения
+source /etc/environment
+
 # Копирование основного скрипта в целевой каталог
-echo "Copying main script to ${TARGET_PATH}..."
-sudo cp "${SCRIPT_PATH}/${MAIN_SCRIPT}" "${TARGET_PATH}/"
+echo "Copying main script to target path..."
+sudo cp ${SCRIPT_PATH}/main.py ${TARGET_PATH}/main.py
 
 # Создание системного сервиса
 echo "Creating systemd service file..."
@@ -49,11 +46,8 @@ Description=Service for ${SERVICE_NAME}
 After=network.target
 
 [Service]
-Environment="token_tg=${token_tg}"
-Environment="token_ow=${token_ow}"
-Environment="token_wa=${token_wa}"
-Environment="token_accu=${token_accu}"
-ExecStart=/usr/bin/python3 ${TARGET_PATH}/${MAIN_SCRIPT}
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/python3 ${TARGET_PATH}/main.py
 WorkingDirectory=${TARGET_PATH}
 Restart=always
 RestartSec=10
