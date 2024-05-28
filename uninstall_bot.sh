@@ -4,7 +4,7 @@
 SERVICE_NAME=servsav_tg_bot
 SERVICE_FILE=/etc/systemd/system/${SERVICE_NAME}.service
 TARGET_PATH=/usr/local/bin
-MAIN_SCRIPT=main.py
+MAIN_SCRIPT=servsav_tg_bot.py
 
 # Остановка сервиса
 echo "Stopping the service..."

@@ -36,7 +36,7 @@ source /etc/environment
 
 # Копирование основного скрипта в целевой каталог
 echo "Copying main script to target path..."
-sudo cp ${SCRIPT_PATH}/main.py ${TARGET_PATH}/main.py
+sudo cp ${SCRIPT_PATH}/servsav_tg_bot.py ${TARGET_PATH}/servsav_tg_bot.py
 
 # Создание системного сервиса
 echo "Creating systemd service file..."
@@ -47,7 +47,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/environment
-ExecStart=/usr/bin/python3 ${TARGET_PATH}/main.py
+ExecStart=/usr/bin/python3 ${TARGET_PATH}/servsav_tg_bot.py
 WorkingDirectory=${TARGET_PATH}
 Restart=always
 RestartSec=10
