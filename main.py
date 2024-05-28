@@ -192,7 +192,7 @@ def listen_ssh_commands(chat_id, client):
                         marked_entries.append(f'[Файл] {entry[:-4]}')
                     else:
                         marked_entries.append(entry)
-                response += f"Результат выполнения команды:\n{'\n'.join(marked_entries)}"
+                response += f"Результат выполнения команды:\n {'\n'.join(marked_entries)}"
             elif errors:
                 response += f"Ошибка выполнения команды:\n{errors}"
             else:
